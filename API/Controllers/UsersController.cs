@@ -34,7 +34,6 @@ namespace API.Controllers
 
         }
 
-        // api/users/3
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {

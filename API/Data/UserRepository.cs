@@ -36,7 +36,7 @@ namespace API.Data
                 .ToListAsync();
         }
 
-        public async Task<AppUser> GetUserByUdAsync(int id)
+        public async Task<AppUser> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
         }
