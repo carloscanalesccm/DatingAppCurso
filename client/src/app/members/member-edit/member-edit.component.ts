@@ -16,11 +16,11 @@ export class MemberEditComponent implements OnInit {
   @ViewChild('editForm') editForm: NgForm;
   member: Member;
   user: User;
-  @HostListener('windows:beforeunload', ['$event']) unloadNotification($event: any) {
-    if(this,this.editForm.dirty){
-      $event.returnValue = true;
+  @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
+    if (this.editForm.dirty) {
+      return false;
     }
-  } //da el fallo
+  } //@HostListener diferente al video
     
 
   constructor(private accountService: AccountService, private memberService: MembersService,
@@ -39,9 +39,11 @@ export class MemberEditComponent implements OnInit {
   }
 
   updateMember(){
-    console.log(this.member);
-    this.toastr.success('Se ha actualizado el perfil correctamente');
-    this.editForm.reset(this.member);
+    this.memberService.updateMember(this.member).subscribe(() => {
+      this.toastr.success('Se ha actualizado el perfil correctamente');
+      this.editForm.reset(this.member);
+    })
+
   }
 
 }
