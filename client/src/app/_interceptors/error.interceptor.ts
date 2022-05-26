@@ -6,10 +6,9 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { catchError } from 'rxjs/operators';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -22,21 +21,23 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (error) {
           switch (error.status) {
             case 400:
-              if(error.error.errors) {
+              if (error.error.errors) {
                 const modalStateErrors = [];
                 for (const key in error.error.errors) {
-                  if (error.error.errors[key]){
+                  if (error.error.errors[key]) {
                     modalStateErrors.push(error.error.errors[key])
                   }
                 }
                 throw modalStateErrors.flat();
+              } else if (typeof(error.error) === 'object') {
+                this.toastr.error(error.statusText, error.status);
               } else {
-                this.toastr.error(error.StatusText, error.status);
+                this.toastr.error(error.error, error.status);
               }
-            break;
+              break;
             case 401:
-              this.toastr.error(error.StatusText, error.status);
-             break;
+              this.toastr.error(error.statusText, error.status);
+              break;
             case 404:
               this.router.navigateByUrl('/not-found');
               break;
@@ -45,7 +46,7 @@ export class ErrorInterceptor implements HttpInterceptor {
               this.router.navigateByUrl('/server-error', navigationExtras);
               break;
             default:
-              this.toastr.error('Someting unexpecter went wrong');
+              this.toastr.error('Something unexpected went wrong');
               console.log(error);
               break;
           }
